@@ -1,70 +1,75 @@
-const app = require('express')()
-const bodyParser = require('body-parser')
+require('dotenv').config();
+const app = require('express')();
+const bodyParser = require('body-parser');
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app
     .route('/webhooks/inbound-sms')
     .get(handleInboundSms)
-    .post(handleInboundSms)
+    .post(handleInboundSms);
 
-let concat_sms = [] //array of message objects
+let concat_sms = []; // Array of message objects
 
 function handleInboundSms(request, response) {
-    const params = Object.assign(request.query, request.body)
+    const params = Object.assign(request.query, request.body);
 
     if (params['concat'] === 'true') {
-        // This is a concatenated message. Add it to an array
-        // so that we can process it later.
+        /* This is a concatenated message. Add it to an array
+           so that we can process it later. */
         concat_sms.push({
             ref: params['concat-ref'],
             part: params['concat-part'],
             from: params.msisdn,
             message: params.text
         });
-        //console.dir(concat_sms)
+
+        /* Do we have all the message parts yet? They might
+           not arrive consecutively. */
+        let parts_for_ref = concat_sms.filter(function (part) {
+            return part.ref == params['concat-ref'];
+        });
 
         // Is this the last message part for this reference?
-        if (params['concat-part'] == params['concat-total']) {
-            processConcatSMS(params['concat-ref'])
+        if (parts_for_ref.length == params['concat-total']) {
+            console.dir(parts_for_ref);
+            processConcatSMS(parts_for_ref);
         }
     } else {
-        // Not a concatenated message, so   just display it
-        displaySMS(params.msisdn, params.text)
+        // Not a concatenated message, so just display it
+        displaySMS(params.msisdn, params.text);
     }
 
-    // send OK status
-    response.status(204).send()
+    // Send OK status
+    response.status(204).send();
 }
 
-function processConcatSMS(ref) {
-    // get all SMS with this reference from our array
-    let all_parts = concat_sms.filter(obj => obj.ref == ref)
+function processConcatSMS(all_parts) {
 
-    all_parts.sort(function(a, b) {
+    // Order all the message parts
+    all_parts.sort(function (a, b) {
         if (Number(a.part) < Number(b.part)) {
             return -1;
         } else {
             return 1;
         }
     })
-    
-    //console.dir(all_parts)
 
-    let concat_message = ''
+    let concat_message = '';
 
-    for(i=0; i < all_parts.length; i++) {
-        concat_message += all_parts[i].message        
+    // Reassemble the message from the parts
+    for (i = 0; i < all_parts.length; i++) {
+        concat_message += all_parts[i].message;
     }
 
-    displaySMS(all_parts[0].from, concat_message)
+    displaySMS(all_parts[0].from, concat_message);
 }
 
 function displaySMS(msisdn, text) {
-    console.log('FROM: ' + msisdn)
-    console.log('MESSAGE: ' + text)
-    console.log('---')
+    console.log('FROM: ' + msisdn);
+    console.log('MESSAGE: ' + text);
+    console.log('---');
 }
 
-app.listen(5000)
+app.listen(process.env.PORT);

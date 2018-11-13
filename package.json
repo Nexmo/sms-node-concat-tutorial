@@ -1,0 +1,25 @@
+{
+  "name": "sms-node-concat-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "receive-concat-express.js",
+  "dependencies": {
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "nexmo": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nexmo/sms-node-concat-tutorial.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nexmo/sms-node-concat-tutorial/issues"
+  },
+  "homepage": "https://github.com/Nexmo/sms-node-concat-tutorial#readme"
+}
