@@ -34,18 +34,18 @@ function handleInboundSms(request, response) {
         // Is this the last message part for this reference?
         if (parts_for_ref.length == params['concat-total']) {
             console.dir(parts_for_ref);
-            processConcatSMS(parts_for_ref);
+            processConcatSms(parts_for_ref);
         }
     } else {
         // Not a concatenated message, so just display it
-        displaySMS(params.msisdn, params.text);
+        displaySms(params.msisdn, params.text);
     }
 
     // Send OK status
     response.status(204).send();
 }
 
-function processConcatSMS(all_parts) {
+function processConcatSms(all_parts) {
 
     // Order all the message parts
     all_parts.sort(function (a, b) {
@@ -63,10 +63,10 @@ function processConcatSMS(all_parts) {
         concat_message += all_parts[i].message;
     }
 
-    displaySMS(all_parts[0].from, concat_message);
+    displaySms(all_parts[0].from, concat_message);
 }
 
-function displaySMS(msisdn, text) {
+function displaySms(msisdn, text) {
     console.log('FROM: ' + msisdn);
     console.log('MESSAGE: ' + text);
     console.log('---');
