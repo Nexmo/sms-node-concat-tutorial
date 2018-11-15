@@ -31,7 +31,7 @@ Fill in the values in `.env` as appropriate.
 Run the following command in the application directory:
 
 ```sh
-node receive-concat-express.js
+npm start
 ```
 The application should be running on the port you specified in `.env`.
 
@@ -43,9 +43,9 @@ https://demo.ngrok.io/webhooks/inbound-sms
 
 ### Using the App
 
-Send a long (> 160 standard GSM characters) text message to the number you specified in the `TO_NUMBER` setting in your `.env` file. Alternatively, you can use `send-sms-concat.js` for testing.
+Send a long (> 160 standard GSM characters) text message to the number you specified in the `TO_NUMBER` setting in your `.env` file.
 
-The console output of `receive-concat-express.js` should show the invididual message parts and then the complete message once all the parts have been received and reassembled.
+The console output of `server.js` should show the invididual message parts and then the complete message once all the parts have been received and reassembled.
 
 ## License
 
